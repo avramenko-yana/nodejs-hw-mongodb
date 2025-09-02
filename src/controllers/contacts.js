@@ -8,7 +8,28 @@ import {
 import createHttpError from 'http-errors';
 
 export const getContactsController = async (req, res) => {
-  const contacts = await getAllContacts();
+   
+  const page = parseInt(req.query.page) || 1;
+  const perPage = parseInt(req.query.perPage) || 10;
+  const sortBy = req.query.sortBy || 'name';
+  const sortOrder = req.query.sortOrder === 'desc' ? -1 : 1;
+ 
+  const filter = {};
+  if (req.query.type) {
+    filter.contactType = req.query.type;
+  }
+  if (req.query.isFavourite) {
+    filter.isFavourite = req.query.isFavourite;
+  }
+
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    filter,
+  });
+
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts!',
@@ -62,6 +83,6 @@ export const deleteContactController = async (req, res) => {
   if (!contact) {
     throw createHttpError(404, 'Contact not found');
   }
- 
+
   res.status(204).send();
 };
