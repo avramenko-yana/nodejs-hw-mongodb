@@ -1,6 +1,7 @@
 import createHttpError from 'http-errors';
 import jwt from 'jsonwebtoken';
 import { User } from '../db/models/user.js';
+import { Session } from '../db/models/session.js';  
 
 export const authenticate = async (req, res, next) => {
   const authHeader = req.get('Authorization');
@@ -17,11 +18,16 @@ export const authenticate = async (req, res, next) => {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
-    console.log('Token payload:', payload); // <--- ДОДАЙТЕ ЦЕЙ РЯДОК
-    const user = await User.findById(payload.userId);
+    const { userId } = payload;
+ 
+    const session = await Session.findOne({ userId });
+    if (!session) { 
+      return next(createHttpError(401, 'Not authorized: session not found. Please log in again.'));
+    } 
 
+    const user = await User.findById(userId);
     if (!user) {
-      return next(createHttpError(401, 'User not found'));
+      return next(createHttpError(401, 'User associated with this session not found'));
     }
 
     req.user = user;
