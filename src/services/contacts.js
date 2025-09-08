@@ -26,14 +26,19 @@ export const getContactById = async (contactId, userId) => {
   return await Contact.findOne({ _id: contactId, userId });
 };
 
-export const createContact = async (payload, userId) => {
-   
-  return await Contact.create({ ...payload, userId });
+export const createContact = async (payload, userId, file) => {
+  const photoUrl = file ? file.path : undefined;
+  return await Contact.create({ ...payload, userId, photo: photoUrl });
 };
 
-export const updateContact = async (contactId, payload, userId) => {
-  return await Contact.findOneAndUpdate({ _id: contactId, userId }, payload, { new: true });
+export const updateContact = async (contactId, payload, userId, file) => {
+  const updateData = { ...payload };
+  if (file) {
+    updateData.photo = file.path;
+  }
+  return await Contact.findOneAndUpdate({ _id: contactId, userId }, updateData, { new: true });
 };
+
 
 export const deleteContact = async (contactId, userId) => {
   return await Contact.findOneAndDelete({ _id: contactId, userId });
