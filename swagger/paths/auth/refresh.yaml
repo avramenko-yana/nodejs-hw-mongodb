@@ -1,0 +1,37 @@
+post:
+  tags:
+    - Auth
+  summary: Refresh user session
+  operationId: refreshSession
+  description: >
+    Generates a new pair of access and refresh tokens based on a valid
+    refresh token. The `refreshToken` and `sessionId` are expected to be
+    sent via httpOnly cookies.
+  responses:
+    '200':
+      description: Successfully refreshed the session.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: Successfully refreshed a session!
+              data:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjMyYzJhOTMxZGU1NTgzYjdmODNiMTgiLCJpYXQiOjE2MjQwNjQwMDAsImV4cCI6MTYyNDA2NDkwMH0.def...
+    '401':
+      description: >
+        Unauthorized. The refresh token is missing, expired, invalid, or the
+        associated session does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/Error.yaml'

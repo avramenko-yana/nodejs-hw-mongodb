@@ -1,0 +1,61 @@
+post:
+  tags:
+    - Auth
+  summary: Reset user password
+  operationId: resetPassword
+  description: >
+    Takes a password reset token and a new password. It verifies the token,
+    finds the associated user, updates their password, and invalidates all
+    their active sessions for security.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [token, password]
+          properties:
+            token:
+              type: string
+              description: The password reset token received via email.
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImpvaG4uZG9lQGV4YW1wbGUuY29tIiwiaWF0IjoxNjI0MDY0MDAwLCJleHAiOjE2MjQwNjQzMDB9.xyz...
+            password:
+              type: string
+              format: password
+              description: The new password for the user.
+              example: my-new-secure-password-123
+  responses:
+    '200':
+      description: Password has been successfully reset.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: Password has been successfully reset.
+              data:
+                type: object
+                example: {}
+    '400':
+      description: Bad Request (e.g., password too short).
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/Error.yaml'
+    '401':
+      description: Unauthorized. The provided token is invalid or has expired.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/Error.yaml'
+    '404':
+      description: Not Found. The user associated with the token was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/Error.yaml'

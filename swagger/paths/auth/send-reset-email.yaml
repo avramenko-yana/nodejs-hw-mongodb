@@ -1,0 +1,55 @@
+post:
+  tags:
+    - Auth
+  summary: Send password reset email
+  operationId: sendResetEmail
+  description: >
+    Takes a user's email, finds the corresponding user, generates a short-lived
+    password reset token, and sends an email containing a link with this token.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [email]
+          properties:
+            email:
+              type: string
+              format: email
+              example: john.doe@example.com
+  responses:
+    '200':
+      description: Reset password email has been successfully sent.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: Reset password email has been successfully sent.
+              data:
+                type: object
+                example: {}
+    '400':
+      description: Bad Request (e.g., invalid email format).
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/Error.yaml'
+    '404':
+      description: Not Found. A user with this email does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/Error.yaml'
+    '500':
+      description: Internal Server Error (e.g., email service failed).
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/Error.yaml'

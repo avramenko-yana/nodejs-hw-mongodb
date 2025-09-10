@@ -1,0 +1,137 @@
+parameters:
+  - name: contactId
+    in: path
+    required: true
+    description: The ID of the contact to retrieve, update or delete.
+    schema:
+      type: string
+      example: 6632c2a931de5583b7f83b18
+
+get:
+  tags:
+    - Contacts
+  summary: Get a contact by ID
+  operationId: getContactById
+  description: Retrieves the details of a specific contact belonging to the authenticated user.
+  security:
+    - bearerAuth: []
+  responses:
+    '200':
+      description: Successfully found contact.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: Successfully found contact with id 6632c2a931de5583b7f83b18!
+              data:
+                $ref: '../../../../swagger/components/schemas/Contact.yaml'
+    '401':
+      description: Unauthorized. The user is not authenticated.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../swagger/components/schemas/Error.yaml'
+    '404':
+      description: Not Found. The contact with the specified ID was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../swagger/components/schemas/Error.yaml'
+
+patch:
+  tags:
+    - Contacts
+  summary: Update a contact by ID
+  operationId: updateContact
+  description: Updates the details of a specific contact belonging to the authenticated user. Can be used to update one or more fields.
+  security:
+    - bearerAuth: []
+  requestBody:
+    description: The contact data to update. At least one field is required.
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The new name of the contact.
+              example: Johnathan Doe
+            phoneNumber:
+              type: string
+              description: The new phone number of the contact.
+              example: '+380509876543'
+            email:
+              type: string
+              format: email
+              description: The new email of the contact.
+              example: john.doe.new@example.com
+            isFavourite:
+              type: boolean
+              description: Whether the contact is a favourite.
+            contactType:
+              type: string
+              enum: [work, home, personal]
+              description: The type of the contact.
+            photo:
+              type: string
+              format: binary
+              description: A new photo file for the contact.
+  responses:
+    '200':
+      description: Successfully updated contact.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: integer
+                example: 200
+              message:
+                type: string
+                example: Successfully patched a contact!
+              data:
+                $ref: '../../../../swagger/components/schemas/Contact.yaml'
+    '401':
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../swagger/components/schemas/Error.yaml'
+    '404':
+      description: Not Found.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../swagger/components/schemas/Error.yaml'
+
+delete:
+  tags:
+    - Contacts
+  summary: Delete a contact by ID
+  operationId: deleteContact
+  description: Deletes a specific contact belonging to the authenticated user.
+  security:
+    - bearerAuth: []
+  responses:
+    '204':
+      description: Contact deleted successfully. No content is returned.
+    '401':
+      description: Unauthorized.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../swagger/components/schemas/Error.yaml'
+    '404':
+      description: Not Found.
+      content:
+        application/json:
+          schema:
+            $ref: '../../../../swagger/components/schemas/Error.yaml'
