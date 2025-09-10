@@ -1,0 +1,22 @@
+post:
+  tags:
+    - Auth
+  summary: Log out a user
+  operationId: logoutUser
+  description: >
+    Invalidates the user's current session by deleting it from the database.
+    This action relies on the `refreshToken` and `sessionId` cookies sent
+    automatically by the client.
+  responses:
+    '204':
+      description: >
+        Successfully logged out. The session has been deleted, and cookies
+        are cleared. No content is returned.
+    '401':
+      description: >
+        Unauthorized. This can happen if the cookies are missing or the
+        session ID is invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '../../components/schemas/Error.yaml'

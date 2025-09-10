@@ -1,0 +1,54 @@
+openapi: 3.1.0
+info:
+  version: 1.0.0
+  title: Contacts API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  description: >
+    An API for managing a collection of contacts, including authentication,
+    CRUD operations, file uploads, and password reset functionality.
+tags:
+  - name: Auth
+    description: Endpoints for user registration, login, logout, and session management.
+  - name: Contacts
+    description: Endpoints for managing user contacts.
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://nodejs-hw-mongodb-rx66.onrender.com
+    description: Production server
+paths:
+   
+  /auth/register:
+    $ref: '../swagger/paths/auth/register.yaml'
+  /auth/login:
+    $ref: '../swagger/paths/auth/login.yaml'
+  /auth/logout:
+    $ref: '../swagger/paths/auth/logout.yaml'
+  /auth/refresh:
+    $ref: '../swagger/paths/auth/refresh.yaml'
+  /auth/send-reset-email:
+    $ref: '../swagger/paths/auth/send-reset-email.yaml'
+  /auth/reset-pwd:
+    $ref: '../swagger/paths/auth/reset-pwd.yaml'
+
+   
+  /contacts:
+    $ref: '../swagger/paths/contacts/index.yaml'
+  /contacts/{contactId}:
+    $ref: '../swagger/paths/contacts/{contactId}/index.yaml'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      $ref: '../swagger/components/schemas/User.yaml'
+    Contact:
+      $ref: '../swagger/components/schemas/Contact.yaml'
+    Error:
+      $ref: '../swagger/components/schemas/Error.yaml'
